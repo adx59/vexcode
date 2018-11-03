@@ -98,7 +98,7 @@ void pre_auton() {
 
 task autonomous() {
 	// lmao
-  go(1.5);
+	go(1.5);
 	turnLeft(2);
 	go(2);
 }
