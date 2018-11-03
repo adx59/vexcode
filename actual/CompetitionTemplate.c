@@ -30,6 +30,7 @@
 /*---------------------------------------------------------------------------*/
 
 int speed = 127;
+int controlMode = 1;
 
 // calibrate variables below
 float timepercell = 775;
