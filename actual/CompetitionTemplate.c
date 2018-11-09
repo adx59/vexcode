@@ -41,6 +41,74 @@ void stopLift(){
 	stopMotor(lift_right);
 }
 
+// START AUTONOMOUS FUNCTIONS
+
+int despeed = 127; // default speed
+
+// calibrate variables below
+float timepercell = 775; // time to traverse one cell on the field
+float timeperhalfturn = 500; // time to turn 45 degrees
+float timepermaniphturn = 750; // time for manipulator to turn 90 degrees
+
+void turnLeft(int turns) {
+	motor[ne_motor] = -1 * despeed;
+	motor[se_motor] = -1 * despeed;
+	motor[nw_motor]= -1 * despeed;
+	motor[sw_motor] = -1 * despeed;
+	delay(turns * timeperhalfturn);
+	motor[ne_motor] = 0;
+	motor[se_motor] = 0;
+	motor[nw_motor]= 0;
+	motor[sw_motor] = 0;
+}
+
+void turnRight(int turns) {
+	motor[ne_motor] = despeed;
+	motor[se_motor] = despeed;
+	motor[nw_motor]= despeed;
+	motor[sw_motor] = despeed;
+	delay(turns * timeperhalfturn);
+	motor[ne_motor] = 0;
+	motor[se_motor] = 0;
+	motor[nw_motor]= 0;
+	motor[sw_motor] = 0;
+}
+
+void go(float cells){
+	int speed;
+	if (cells <= 0) {
+		speed = despeed * -1; // change speed to negative if param passed is negative
+	} else {
+		speed = despeed;
+	}
+	motor[ne_motor] = -1 * speed;
+	motor[se_motor] = -1 * speed;
+	motor[nw_motor]= speed;
+	motor[sw_motor] = speed;
+	delay(cells * timepercell);
+	motor[ne_motor] = 0;
+	motor[se_motor] = 0;
+	motor[nw_motor]= 0;
+	motor[sw_motor] = 0;
+}
+
+void liftop(float speed) {
+	motor[lift_left] = -1 * speed;
+	motor[lift_right] = speed;
+}
+
+void manip(float turns){
+	startMotor(manipulator, despeed);
+	delay(turns * timepermaniphturn);
+	stopMotor(manipulator);
+}
+
+void manipr(float turns) {
+	startMotor(manipulator, -1*despeed);
+	delay(turns * timepermaniphturn);
+	stopMotor(manipulator);
+}
+
 void pre_auton() {
   bStopTasksBetweenModes = true;
 }
@@ -56,7 +124,7 @@ void pre_auton() {
 /*---------------------------------------------------------------------------*/
 
 task autonomous() {
-	// no auton ty
+	// no auton lul
 }
 
 /*---------------------------------------------------------------------------*/
@@ -71,7 +139,7 @@ task autonomous() {
 
 task usercontrol() {
   while (true) {
-    if (controlMode == 0) { // useless control mode, delete later
+    if (controlMode == 0) {
 			motor[ne_motor] = -1 * (vexRT[Ch2] - vexRT[Ch1])/2;
 			motor[se_motor] = -1 * (vexRT[Ch2] - vexRT[Ch1])/2;
 
@@ -93,9 +161,10 @@ task usercontrol() {
 			stopLift();
 		}
 
-		if (vexRT[Btn5U] == 1 && SensorValue[potentiometer] <= 2730) {
+
+		if (vexRT[Btn5U] == 1) {
 			startMotor(manipulator, 127);
-		} else if (vexRT[Btn5D] == 1 && SensorValue[potentiometer] >= 0) {
+		} else if (vexRT[Btn5D] == 1) {
 			startMotor(manipulator, -127);
 		} else {
 			stopMotor(manipulator);
