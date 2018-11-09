@@ -29,48 +29,7 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-int speed = 127;
 int controlMode = 1;
-
-// calibrate variables below
-float timepercell = 775;
-float timeperhalfturn = 375;
-
-void turnLeft(int turns) {
-	motor[ne_motor] = -1 * speed;
-	motor[se_motor] = -1 * speed;
-	motor[nw_motor]= -1 * speed;
-	motor[sw_motor] = -1 * speed;
-	delay(turns * timeperhalfturn);
-	motor[ne_motor] = 0;
-	motor[se_motor] = 0;
-	motor[nw_motor]= 0;
-	motor[sw_motor] = 0;
-}
-
-void turnRight(int turns) {
-	motor[ne_motor] = speed;
-	motor[se_motor] = speed;
-	motor[nw_motor]= speed;
-	motor[sw_motor] = speed;
-	delay(turns * timeperhalfturn);
-	motor[ne_motor] = 0;
-	motor[se_motor] = 0;
-	motor[nw_motor]= 0;
-	motor[sw_motor] = 0;
-}
-
-void go(float cells){
-	motor[ne_motor] = -1 * speed;
-	motor[se_motor] = -1 * speed;
-	motor[nw_motor]= speed;
-	motor[sw_motor] = speed;
-	delay(cells * timepercell);
-	motor[ne_motor] = 0;
-	motor[se_motor] = 0;
-	motor[nw_motor]= 0;
-	motor[sw_motor] = 0;
-}
 
 void startLift(int speed){
 	startMotor(lift_left, speed*-1);
@@ -97,10 +56,7 @@ void pre_auton() {
 /*---------------------------------------------------------------------------*/
 
 task autonomous() {
-	// lmao
-	go(1.5);
-	turnLeft(2);
-	go(2);
+	// no auton ty
 }
 
 /*---------------------------------------------------------------------------*/
@@ -115,7 +71,7 @@ task autonomous() {
 
 task usercontrol() {
   while (true) {
-    if (controlMode == 0) {
+    if (controlMode == 0) { // useless control mode, delete later
 			motor[ne_motor] = -1 * (vexRT[Ch2] - vexRT[Ch1])/2;
 			motor[se_motor] = -1 * (vexRT[Ch2] - vexRT[Ch1])/2;
 
@@ -135,14 +91,6 @@ task usercontrol() {
 			startLift(-50);
 		} else {
 			stopLift();
-		}
-
-		if (vexRT[Btn8U] == 1 ){
-			startMotor(transmanip, 127);
-		} else if (vexRT[Btn8D] ==  1) {
-			startMotor(transmanip, -127);
-		} else {
-			stopMotor(transmanip);
 		}
 
 		if (vexRT[Btn5U] == 1 && SensorValue[potentiometer] <= 2730) {
