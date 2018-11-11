@@ -88,24 +88,32 @@ RED TEAM, CLOSE SIDE: Jumper @ Digital Port 4
 
 task main() {
 	if (SensorValue[jumper1] == 1) {
-		turnLeft(2);
 		go(1);
 		turnRight(2);
+		liftop(127);
+		delay(250);
+		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper2] == 1){
-		turnRight(2);
 		go(1);
 		turnLeft(2);
+		liftop(127);
+		delay(250);
+		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper3] == 1){
-		turnRight(2);
 		go(1);
 		turnLeft(2);
+		liftop(127);
+		delay(250);
+		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper4] == 1){
-		turnLeft(2);
 		go(1);
 		turnRight(2);
+		liftop(127);
+		delay(250);
+		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper5] == 1){
 		go(1); // go one cell forward
