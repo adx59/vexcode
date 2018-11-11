@@ -56,17 +56,10 @@ task main() {
 			stopLift();
 		}
 
-		if (vexRT[Btn8U] == 1 ){
-			startMotor(transmanip, 127);
-		} else if (vexRT[Btn8D] ==  1) {
-			startMotor(transmanip, -127);
-		} else {
-			stopMotor(transmanip);
-		}
 
-		if (vexRT[Btn5U] == 1 && SensorValue[potentiometer] <= 2730) {
+		if (vexRT[Btn5U] == 1) {
 			startMotor(manipulator, 127);
-		} else if (vexRT[Btn5D] == 1 && SensorValue[potentiometer] >= 0) {
+		} else if (vexRT[Btn5D] == 1) {
 			startMotor(manipulator, -127);
 		} else {
 			stopMotor(manipulator);
