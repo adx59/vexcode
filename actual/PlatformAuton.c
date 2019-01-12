@@ -14,9 +14,18 @@
 
 int despeed = 127; // default speed
 
+// one rotation = 40.8 cm
+// one cell = 60.5 cm
+// rot / cell = 1.482 rots.
+// wheel rad = 6.5 cm
+// ticks per rotation = 627.2
+// therefore 1 cell = 929.51 ticks
+
 // calibrate variables below
-float timepercell = 775; // time to traverse one cell on the field
-float timeperhalfturn = 500; // time to turn 45 degrees
+float tickspercell = 929.51;
+
+float timepercell = 650; // time to traverse one cell on the field
+float timeperhalfturn = 550; // time to turn 45 degrees
 float timepermaniphturn = 750; // time for manipulator to turn 90 degrees
 
 void turnLeft(int turns) {
@@ -50,11 +59,14 @@ void go(float cells){
 		} else {
 		speed = despeed;
 	}
+	resetMotorEncoder(sw_motor);
 	motor[ne_motor] = -1 * speed;
 	motor[se_motor] = -1 * speed;
 	motor[nw_motor]= speed;
 	motor[sw_motor] = speed;
-	delay(cells * timepercell);
+	while (getMotorEncoder(sw_motor) < tickspercell*cells) {
+		delay(10);
+	}
 	motor[ne_motor] = 0;
 	motor[se_motor] = 0;
 	motor[nw_motor]= 0;
@@ -91,38 +103,31 @@ task main() {
 		go(1);
 		turnRight(2);
 		liftop(127);
-		delay(250);
+		delay(200);
 		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper2] == 1){
 		go(1);
 		turnLeft(2);
 		liftop(127);
-		delay(250);
+		delay(200);
 		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper3] == 1){
 		go(1);
 		turnLeft(2);
 		liftop(127);
-		delay(250);
+		delay(200);
 		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper4] == 1){
 		go(1);
 		turnRight(2);
 		liftop(127);
-		delay(250);
+		delay(200);
 		liftop(0);
 		go(2.5);
 	} else if (SensorValue[jumper5] == 1){
-		go(1); // go one cell forward
-		turnLeft(2); // turn left 90 degrees
-		turnRight(2); // turn right 90 degrees
-		liftop(127); // operate lift to full speed
-		manip(2); // manipulate 90 degrees
-		liftop(-127); // operate lift in reverse
-		delay(1000);
-		liftop(0); // stop lift
+		go(1);
 	}
 }
