@@ -13,7 +13,7 @@ string screens[3] = {"red", "yellow", "green"};
 tSensors leds[3] = {red, yellow, green};
 int current_screen = 0;
 
-void displayScreen(int screen) {
+void displayScreen(int screen) {*
 	displayLCDCenteredString(0, screens[screen]);
 	displayLCDCenteredString(1, " <     []     > ")
 }

@@ -39,17 +39,44 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-const int defspeed = 127;
+const int defspeed = 100;
 const float rotation = 627.2;
 const float remnant = 344;
 const float cell = 2;
-const float turnticks = 390;
+const float turnticks = 370;
 
 const int highflag = 85;
 const int medflag = 50;
 
 void pre_auton() {
 	bStopTasksBetweenModes = true;
+}
+
+void sgo(float rotations, int lspd, int rspd) {
+	resetMotorEncoder(sw_motor);
+	resetMotorEncoder(se_motor);
+
+	float ticks = (rotations * rotation) - remnant;
+
+	if (ticks > 0){
+		while ((getMotorEncoder(sw_motor) <= ticks) && (getMotorEncoder(se_motor) >= -1*ticks)) {
+			motor[nw_motor] = lspd;
+			motor[sw_motor] = lspd;
+			motor[ne_motor] = -1 * rspd;
+			motor[se_motor] = -1 * rspd;
+		}
+		} else {
+		while ((getMotorEncoder(sw_motor) >= ticks) && (getMotorEncoder(se_motor) <= -1*ticks)) {
+			motor[nw_motor] = lspd;
+			motor[sw_motor] = lspd;
+			motor[ne_motor] = -1 * rspd;
+			motor[se_motor] = -1 * rspd;
+		}
+	}
+	motor[nw_motor] = 0;
+	motor[ne_motor] = 0;
+	motor[sw_motor] = 0;
+	motor[se_motor] = 0;
 }
 
 void go(float rotations) {
@@ -60,7 +87,7 @@ void go(float rotations) {
 	float ticks = (rotations * rotation) - remnant;
 	if (rotations < 0) {
 		speed = defspeed * -1;
-	} else {
+		} else {
 		speed = defspeed;
 	}
 
@@ -71,7 +98,7 @@ void go(float rotations) {
 			motor[ne_motor] = -1 * speed;
 			motor[se_motor] = -1 * speed;
 		}
-	} else {
+		} else {
 		while ((getMotorEncoder(sw_motor) >= ticks) && (getMotorEncoder(se_motor) <= -1*ticks)) {
 			motor[nw_motor] = speed;
 			motor[sw_motor] = speed;
@@ -154,17 +181,17 @@ task autonomous() {
 		go(-1.2 * cell);
 		intakeop(0);
 		turnLeft(1);
-		go(0.6 * cell);
+		go(0.5 * cell);
 		shooterop(127);
-		delay(3300);
+		delay(3500);
 		shooterop(0);
 		intakeop(-127);
-		go(0.47 * cell);
+		go(0.55 * cell);
 		delay(1000);
 		shooterop(127);
-		delay(3300);
+		delay(3500);
 		shooterop(0);
-		go(0.8* cell);
+		sgo(1* cell, 50, 127);
 		intakeop(0);
 	} else if (SensorValue[jumper2] == 1) {
 		go(1.6 * cell);
@@ -222,12 +249,12 @@ task usercontrol() {
 			turnLEDOn(led_syellow);
 			turnLEDOff(led_red);
 			turnLEDOff(led_sred);
-		} else if (highflag <= SensorValue[urf] && SensorValue[urf] <= highflag + 10) {
+			} else if (highflag <= SensorValue[urf] && SensorValue[urf] <= highflag + 10) {
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_syellow);
 			turnLEDOn(led_red);
 			turnLEDOn(led_sred);
-		} else {
+			} else {
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_syellow);
 			turnLEDOff(led_red);
@@ -235,34 +262,29 @@ task usercontrol() {
 		}
 
 		// shooter control
-		if (limitSwitch == 0) {
-			motor[shooter_left] = -127;
-			motor[shooter_right] = 127;
-		} else {
-			motor[shooter_left] = 0;
-			motor[shooter_right] = 0;
-		}
-
 		if (vexRT[Btn5U] == 1) {
 			motor[shooter_left] = -127;
 			motor[shooter_right] = 127;
+			} else {
+			motor[shooter_left] = 0;
+			motor[shooter_right] = 0;
 		}
 
 		// intake control
 		if (vexRT[Btn6D] == 1) {
 			motor[intake] = 127;
-		} else if (vexRT[Btn6U] == 1){
+			} else if (vexRT[Btn6U] == 1){
 			motor[intake] = -127;
-		} else {
+			} else {
 			motor[intake] = 0;
 		}
 
 		// flipper control
 		if (vexRT[Btn8L] == 1) {
 			motor[flipper] = -127;
-		} else if (vexRT[Btn8D]){
+			} else if (vexRT[Btn8D]){
 			motor[flipper] = 127;
-		} else {
+			} else {
 			motor[flipper] = 0;
 		}
 
