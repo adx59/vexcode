@@ -1,7 +1,7 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    potentiometer,  sensorPotentiometer)
-#pragma config(Sensor, dgtl1,  encoderOne,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  urf,            sensorSONAR_cm)
+#pragma config(Sensor, dgtl5,  encoderOne,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl10, led_red,        sensorLEDtoVCC)
 #pragma config(Sensor, dgtl11, led_yellow,     sensorLEDtoVCC)
 #pragma config(Sensor, dgtl12, led_green,      sensorLEDtoVCC)
@@ -29,6 +29,25 @@ RIGHT & LEFT JOYSTICKS -> drive train (right side & left side)
 
 const int highflag = 95;
 const int medflag = 55;
+//bool released = false;
+
+//task resetOpticalEncoder() {
+//	while (true) {
+//		if (vexRT[Btn5U] == 1) {
+//			SensorValue[encoderOne] = 0;
+//			delay(1000);
+//		}
+//		if (vexRT[Btn5U] == 1) {
+//			button_state = 1;
+//		}
+//		if (vexRT[Btn5U] == 0) {
+//			if (button_state == 1) {
+//				released = true;
+//			}
+//			button_state = 0;
+//		}
+//	}
+//}
 
 task flashLED() {
 	turnLEDOn(led_red);
@@ -43,7 +62,13 @@ task flashLED() {
 }
 
 task main() {
+	int value;
+	bool canPressButton = true;
+	SensorValue[encoderOne] = 0;
+	//startTask(resetOpticalEncoder);
 	while(true){
+		//value = SensorValue[encoderOne];
+		//writeDebugStreamLine("%d", value);
 		// drive train
 		motor[nw_motor] = vexRT[Ch3];
 		motor[sw_motor] = vexRT[Ch3];
@@ -51,45 +76,68 @@ task main() {
 		motor[ne_motor]= -1 * vexRT[Ch2];
 		motor[se_motor] = -1 * vexRT[Ch2];
 
-		// flag detector
+		// flag detector9
 		if (vexRT[Btn8D] == 1) {
 			if (medflag <= SensorValue[urf] <= medflag + 5) {
 				turnLEDOn(led_yellow);
-			} else if (highflag <= SensorValue[urf] <= highflag + 5) {
+				} else if (highflag <= SensorValue[urf] <= highflag + 5) {
 				turnLEDOn(led_green);
-			} else {
+				} else {
 				turnLEDOn(led_red);
 			}
-		} else {
+			} else {
 			turnLEDOff(led_red);
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_green);
 		}
 
 		// shooter control
-		if (vexRT[Btn5U] == 1) {
-			motor[shooter_left] = -127;
-			motor[shooter_right] = 127;
-		} else {
-			motor[shooter_left] = 0;
-			motor[shooter_right] = 0;
+		//-259
+		if (canPressButton == true) {
+			if (SensorValue[encoderOne] < 259) {
+				writeDebugStreamLine("in canPressButton");
+				motor[shooter_left] = -127;
+				motor[shooter_right] = 127;
+			}
+			else if (SensorValue[encoderOne] >= 259) {
+				motor[shooter_left] = 0;
+				motor[shooter_right] = 0;
+				if (vexRT[Btn5U] == 1) {
+					motor[shooter_left] = -127;
+					motor[shooter_right] = 127;
+				}
+			}
+			if (357 <= SensorValue[encoderOne] && SensorValue[encoderOne] <= 400) {
+				writeDebugStream("in 280 statement");
+				SensorValue[encoderOne] = 0;
+			}
 		}
+
+		if (vexRT[Btn5U] == 1) {
+			canPressButton = true;
+		}
+
+		if (vexRT[Btn5D] == 1) {
+			writeDebugStreamLine("in BtnD");
+			canPressButton = false;
+		}
+
 
 		// intake control
 		if (vexRT[Btn6D] == 1) {
 			motor[intake] = 127;
-		} else if (vexRT[Btn6U] == 1){
+			} else if (vexRT[Btn6U] == 1){
 			motor[intake] = -127;
-		} else {
+			} else {
 			motor[intake] = 0;
 		}
 
 		// flipper control
 		if (vexRT[Btn8L] == 1) {
 			motor[flipper] = -127;
-		} else if (vexRT[Btn8D]){
+			} else if (vexRT[Btn8D]){
 			motor[flipper] = 127;
-		} else {
+			} else {
 			motor[flipper] = 0;
 		}
 

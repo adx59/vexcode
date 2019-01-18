@@ -3,6 +3,7 @@
 #pragma config(Sensor, dgtl1,  jumper1,        sensorTouch)
 #pragma config(Sensor, dgtl2,  jumper2,        sensorTouch)
 #pragma config(Sensor, dgtl3,  urf,            sensorSONAR_cm)
+#pragma config(Sensor, dgtl5,  encoderOne,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl8,  led_sred,       sensorLEDtoVCC)
 #pragma config(Sensor, dgtl9,  led_red,        sensorLEDtoVCC)
 #pragma config(Sensor, dgtl10, led_syellow,    sensorLEDtoVCC)
@@ -52,6 +53,13 @@ void pre_auton() {
 	bStopTasksBetweenModes = true;
 }
 
+/**
+* Runs the robot forward, but allows you to specify speed per side.
+*
+* @param {float} rotations Number of rotations to go.
+* @param {int} lspd Speed for left side to go.
+* @param {int} rspd Speed for right side to go.
+*/
 void sgo(float rotations, int lspd, int rspd) {
 	resetMotorEncoder(sw_motor);
 	resetMotorEncoder(se_motor);
@@ -79,6 +87,11 @@ void sgo(float rotations, int lspd, int rspd) {
 	motor[se_motor] = 0;
 }
 
+/**
+* Runs the robot forward.
+*
+* @param {float} rotations Number of rotations to run.
+*/
 void go(float rotations) {
 	resetMotorEncoder(sw_motor);
 	resetMotorEncoder(se_motor);
@@ -112,6 +125,11 @@ void go(float rotations) {
 	motor[se_motor] = 0;
 }
 
+/**
+* Turn the robot counter-clockwise.
+*
+* @param {float} turns Degrees to turn, in increments of 90 degrees.
+*/
 void turnLeft(float turns) {
 	resetMotorEncoder(sw_motor);
 	resetMotorEncoder(se_motor);
@@ -130,6 +148,11 @@ void turnLeft(float turns) {
 	motor[se_motor] = 0;
 }
 
+/**
+* Turn the robot clockwise.
+*
+* @param {float} turns Degrees to turn, in increments of 90 degrees.
+*/
 void turnRight(int turns) {
 	resetMotorEncoder(sw_motor);
 	resetMotorEncoder(se_motor);
@@ -148,10 +171,20 @@ void turnRight(int turns) {
 	motor[se_motor] = 0;
 }
 
+/**
+* Sets the intake speed.
+*
+* @param {int} speed Speed to run the intake at.
+*/
 void intakeop(int speed) {
 	motor[intake] = speed;
 }
 
+/**
+* Sets the shooter speed.
+*
+* @param {int} speed Speed to run the shooter at.
+*/
 void shooterop(int speed) {
 	motor[shooter_left] = -1 * speed;
 	motor[shooter_right] = speed;
@@ -177,40 +210,42 @@ task autonomous() {
 	if (SensorValue[jumper1] == 1) {
 		go(1.6 * cell);
 		intakeop(-127);
-		delay(300);
+		delay(500);
 		go(-1.2 * cell);
 		intakeop(0);
 		turnLeft(1);
-		go(0.5 * cell);
+		go(0.45 * cell);
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
 		intakeop(-127);
-		go(0.55 * cell);
+		go(0.6 * cell);
 		delay(1000);
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
 		sgo(1* cell, 50, 127);
+		delay(2000);
 		intakeop(0);
-	} else if (SensorValue[jumper2] == 1) {
+		} else if (SensorValue[jumper2] == 1) {
 		go(1.6 * cell);
 		intakeop(-127);
-		delay(300);
-		go(-1.2 * cell);
+		delay(500);
+		go(-1 * cell);
 		intakeop(0);
 		turnRight(1);
-		go(0.6 * cell);
+		go(0.45 * cell);
 		shooterop(127);
-		delay(3300);
+		delay(3500);
 		shooterop(0);
 		intakeop(-127);
-		go(0.47 * cell);
+		go(0.6 * cell);
 		delay(1000);
 		shooterop(127);
-		delay(3300);
+		delay(3500);
 		shooterop(0);
-		go(0.8* cell);
+		sgo(1* cell, 127, 50);
+		delay(2000);
 		intakeop(0);
 	}
 }
@@ -225,6 +260,11 @@ task autonomous() {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+/**
+* Victory dance that's kind of broken.
+*
+* This is a task btw, just in case you can't read.
+*/
 task flashLED() {
 	turnLEDOn(led_red);
 	delay(500);
@@ -235,6 +275,8 @@ task flashLED() {
 }
 
 task usercontrol() {
+	SensorValue[encoderOne] = 0;
+	bool isButtonPressed = false;
 	while (true) {
 		// drive train
 		motor[nw_motor] = vexRT[Ch3];
@@ -265,7 +307,7 @@ task usercontrol() {
 		if (vexRT[Btn5U] == 1) {
 			motor[shooter_left] = -127;
 			motor[shooter_right] = 127;
-			} else {
+		} else {
 			motor[shooter_left] = 0;
 			motor[shooter_right] = 0;
 		}
