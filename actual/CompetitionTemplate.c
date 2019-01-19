@@ -274,8 +274,7 @@ task flashLED() {
 	turnLEDOff(led_yellow);
 }
 
-task usercontrol() {
-	SensorValue[encoderOne] = 0;
+task usercontrol() {m
 	bool isButtonPressed = false;
 	while (true) {
 		// drive train
@@ -291,12 +290,12 @@ task usercontrol() {
 			turnLEDOn(led_syellow);
 			turnLEDOff(led_red);
 			turnLEDOff(led_sred);
-			} else if (highflag <= SensorValue[urf] && SensorValue[urf] <= highflag + 10) {
+		} else if (highflag <= SensorValue[urf] && SensorValue[urf] <= highflag + 10) {
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_syellow);
 			turnLEDOn(led_red);
 			turnLEDOn(led_sred);
-			} else {
+		} else {
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_syellow);
 			turnLEDOff(led_red);
@@ -307,7 +306,7 @@ task usercontrol() {
 		if (vexRT[Btn5U] == 1) {
 			motor[shooter_left] = -127;
 			motor[shooter_right] = 127;
-		} else {
+			} else {
 			motor[shooter_left] = 0;
 			motor[shooter_right] = 0;
 		}
