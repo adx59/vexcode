@@ -8,6 +8,7 @@
 #pragma config(Sensor, dgtl9,  led_red,        sensorLEDtoVCC)
 #pragma config(Sensor, dgtl10, led_syellow,    sensorLEDtoVCC)
 #pragma config(Sensor, dgtl11, led_yellow,     sensorLEDtoVCC)
+#pragma config(Sensor, dgtl12, jumper3,        sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port1,           flipper,       tmotorVex393_HBridge, openLoop)
@@ -213,7 +214,7 @@ task autonomous() {
 		delay(500);
 		go(-1.2 * cell);
 		intakeop(0);
-		turnLeft(1);
+		turnLeft(1.11);
 		go(0.45 * cell);
 		shooterop(127);
 		delay(3500);
@@ -224,17 +225,18 @@ task autonomous() {
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
-		sgo(1* cell, 50, 127);
+		go(-0.1 * cell);
+		sgo(1* cell, 47, 127);
 		delay(2000);
 		intakeop(0);
 		} else if (SensorValue[jumper2] == 1) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
-		go(-1 * cell);
+		go(-1.05 * cell);
 		intakeop(0);
-		turnRight(1);
-		go(0.45 * cell);
+		turnRight(1.115);
+		go(0.49 * cell);
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
@@ -244,9 +246,21 @@ task autonomous() {
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
-		sgo(1* cell, 127, 50);
-		delay(2000);
+		go(-0.15 * cell);
+		sgo(1* cell, 127, 47);
+		delay(1700);
+		go(0.1 * cell);
+		delay(500);
 		intakeop(0);
+		} else if (SensorValue[jumper3] == 1) {
+		go(1.6 * cell);
+		intakeop(-127);
+		delay(500);
+		go(-0.7 * cell);
+		intakeop(0);
+		turnRight(0.999);
+		delay(1000);
+
 	}
 }
 
@@ -274,7 +288,7 @@ task flashLED() {
 	turnLEDOff(led_yellow);
 }
 
-task usercontrol() {m
+task usercontrol() {
 	bool isButtonPressed = false;
 	while (true) {
 		// drive train
@@ -290,12 +304,12 @@ task usercontrol() {m
 			turnLEDOn(led_syellow);
 			turnLEDOff(led_red);
 			turnLEDOff(led_sred);
-		} else if (highflag <= SensorValue[urf] && SensorValue[urf] <= highflag + 10) {
+			} else if (highflag <= SensorValue[urf] && SensorValue[urf] <= highflag + 10) {
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_syellow);
 			turnLEDOn(led_red);
 			turnLEDOn(led_sred);
-		} else {
+			} else {
 			turnLEDOff(led_yellow);
 			turnLEDOff(led_syellow);
 			turnLEDOff(led_red);
