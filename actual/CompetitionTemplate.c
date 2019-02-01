@@ -1,14 +1,11 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    potentiometer,  sensorPotentiometer)
-#pragma config(Sensor, dgtl1,  jumper1,        sensorTouch)
-#pragma config(Sensor, dgtl2,  jumper2,        sensorTouch)
 #pragma config(Sensor, dgtl3,  urf,            sensorSONAR_cm)
 #pragma config(Sensor, dgtl5,  encoderOne,     sensorQuadEncoder)
 #pragma config(Sensor, dgtl8,  led_sred,       sensorLEDtoVCC)
 #pragma config(Sensor, dgtl9,  led_red,        sensorLEDtoVCC)
 #pragma config(Sensor, dgtl10, led_syellow,    sensorLEDtoVCC)
 #pragma config(Sensor, dgtl11, led_yellow,     sensorLEDtoVCC)
-#pragma config(Sensor, dgtl12, jumper3,        sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign )
 #pragma config(Motor,  port1,           flipper,       tmotorVex393_HBridge, openLoop)
@@ -40,6 +37,27 @@
 /*  function is only called once after the cortex has been powered on and    */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+
+/**
+* LCD AutonSelect starts here.
+*/
+
+// 0 = don't run auton
+// 1 = flag-side red
+// 2 = flag-side blue
+// 3 = far-side red
+// 4 = far-side blue
+int auton = 0;
+
+task watchButtons() {
+	while (true) {
+		int cachedButton = n
+	}
+}
+
+/**
+* LCD AutonSelect ends here.
+*/
 
 const int defspeed = 100;
 const float rotation = 627.2;
@@ -229,7 +247,7 @@ task autonomous() {
 		sgo(1* cell, 47, 127);
 		delay(2000);
 		intakeop(0);
-		} else if (SensorValue[jumper2] == 1) {
+	} else if (SensorValue[jumper2] == 1) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
@@ -252,7 +270,7 @@ task autonomous() {
 		go(0.1 * cell);
 		delay(500);
 		intakeop(0);
-		} else if (SensorValue[jumper3] == 1) {
+	} else if (SensorValue[jumper3] == 1) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
@@ -260,7 +278,6 @@ task autonomous() {
 		intakeop(0);
 		turnRight(0.999);
 		delay(1000);
-
 	}
 }
 
