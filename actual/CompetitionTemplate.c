@@ -49,9 +49,46 @@
 // 4 = far-side blue
 int auton = 0;
 
-task watchButtons() {
+int onOption = 0;
+string menuOptions[5] = {
+	"No Auton",
+	"Flag-Side Red",
+	"Flag-Side Blue",
+	"Far-Side Red",
+	"Far-Side Blue"
+};
+
+task renderLCD() {
 	while (true) {
-		int cachedButton = n
+		displayLCDCenteredString(0, menuOptions[onOption]);
+		if (auton != onOption) {
+			displayLCDString(1, 0, " <     []     > ");
+		} else {
+			displayLCDString(1, 0, " <     {}     > ");
+		}
+	}
+}
+
+task watchButtons() {
+	bool pressed = false;
+	while (true) {
+		if (nLCDButtons != 0 && !pressed) {
+			if (nLCDButtons == 1) {
+					if (onOption > 0) {
+						onOption--;
+					}
+			}	else if (nLCDButtons == 2) {
+				auton = onOption;
+			} else if (nLCDButtons == 4) {
+				if (onOption < 4) {
+					onOption++;
+				}
+			}
+			pressed = true;
+		}
+		if (nLCDButtons == 0) {
+			pressed = false;
+		}
 	}
 }
 
@@ -63,13 +100,17 @@ const int defspeed = 100;
 const float rotation = 627.2;
 const float remnant = 344;
 const float cell = 2;
-const float turnticks = 370;
+const float turnticks = 350;
 
 const int highflag = 85;
 const int medflag = 50;
 
 void pre_auton() {
 	bStopTasksBetweenModes = true;
+
+	bLCDBacklight = true;
+	startTask(watchButtons);
+	startTask(renderLCD);
 }
 
 /**
@@ -172,7 +213,7 @@ void turnLeft(float turns) {
 *
 * @param {float} turns Degrees to turn, in increments of 90 degrees.
 */
-void turnRight(int turns) {
+void turnRight(float turns) {
 	resetMotorEncoder(sw_motor);
 	resetMotorEncoder(se_motor);
 
@@ -219,14 +260,8 @@ void shooterop(int speed) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-/*
-RED TEAM, FLAG SIDE: JUMPER 1
-BLUE TEAM, FLAG SIDE: JUMPER 2
-If not on flag side, do not plug in jumper!!
-*/
-
 task autonomous() {
-	if (SensorValue[jumper1] == 1) {
+	if (auton == 1) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
@@ -247,7 +282,7 @@ task autonomous() {
 		sgo(1* cell, 47, 127);
 		delay(2000);
 		intakeop(0);
-	} else if (SensorValue[jumper2] == 1) {
+	} else if (auton == 2) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
@@ -270,14 +305,13 @@ task autonomous() {
 		go(0.1 * cell);
 		delay(500);
 		intakeop(0);
-	} else if (SensorValue[jumper3] == 1) {
+	} else if (auton == 3) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
 		go(-0.7 * cell);
 		intakeop(0);
-		turnRight(0.999);
-		delay(1000);
+		turnRight(1);
 	}
 }
 
