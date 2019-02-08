@@ -93,34 +93,25 @@ task main() {
 
 		// shooter control
 		//-259
-		if (canPressButton == true) {
-			if (SensorValue[encoderOne] < 259) {
-				writeDebugStreamLine("in canPressButton");
-				motor[shooter_left] = -127;
-				motor[shooter_right] = 127;
-			}
-			else if (SensorValue[encoderOne] >= 259) {
-				motor[shooter_left] = 0;
-				motor[shooter_right] = 0;
-				if (vexRT[Btn5U] == 1) {
-					motor[shooter_left] = -127;
-					motor[shooter_right] = 127;
-				}
-			}
-			if (357 <= SensorValue[encoderOne] && SensorValue[encoderOne] <= 400) {
-				writeDebugStream("in 280 statement");
-				SensorValue[encoderOne] = 0;
-			}
-		}
 
 		if (vexRT[Btn5U] == 1) {
-			canPressButton = true;
+			motor[shooter_left] = -127;
+			motor[shooter_right] = 127;
+		}
+		else {
+			motor[shooter_left] = 0;
+			motor[shooter_right] = 0;
+		}
+		if (SensorValue[encoderOne] < 259 && SensorValue[encoderOne] > 1) {
+			motor[shooter_left] = -127;
+			motor[shooter_right] = 127;
+		}
+		else if (SensorValue[encoderOne] > 259) {
+			motor[shooter_left] = 0;
+			motor[shooter_right] = 0;
+			SensorValue[encoderOne] = 0;
 		}
 
-		if (vexRT[Btn5D] == 1) {
-			writeDebugStreamLine("in BtnD");
-			canPressButton = false;
-		}
 
 
 		// intake control
