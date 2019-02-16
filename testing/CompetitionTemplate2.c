@@ -1,3 +1,4 @@
+
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    potentiometer,  sensorPotentiometer)
 #pragma config(Sensor, dgtl3,  urf,            sensorSONAR_cm)
@@ -34,6 +35,13 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
+//This is Jeremy's Competition Template code in order to not mess up the other Competition Template.
+//This is for the far side auton and can be deleted afterwards however if the far side autons and close side autons
+//work on this doc, then we will copy this o`ver onto the original file
+
+/* */
+
+
 /**
 * LCD AutonSelect starts here.
 */
@@ -59,7 +67,7 @@ task renderLCD() {
 		displayLCDCenteredString(0, menuOptions[onOption]);
 		if (auton != onOption) {
 			displayLCDString(1, 0, " <     []     > ");
-		} else {
+			} else {
 			displayLCDString(1, 0, " <     {}     > ");
 		}
 	}
@@ -70,12 +78,12 @@ task watchButtons() {
 	while (true) {
 		if (nLCDButtons != 0 && !pressed) {
 			if (nLCDButtons == 1) {
-					if (onOption > 0) {
-						onOption--;
-					}
-			}	else if (nLCDButtons == 2) {
+				if (onOption > 0) {
+					onOption--;
+				}
+				}	else if (nLCDButtons == 2) {
 				auton = onOption;
-			} else if (nLCDButtons == 4) {
+				} else if (nLCDButtons == 4) {
 				if (onOption < 4) {
 					onOption++;
 				}
@@ -278,7 +286,7 @@ task autonomous() {
 		sgo(1* cell, 47, 127);
 		delay(2000);
 		intakeop(0);
-	} else if (auton == 2) {
+		} else if (auton == 2) {
 		go(1.6 * cell);
 		intakeop(-127);
 		delay(500);
@@ -301,13 +309,22 @@ task autonomous() {
 		go(0.1 * cell);
 		delay(500);
 		intakeop(0);
-	} else if (auton == 3) {
-		go(1.6 * cell);
+		} else if (auton == 3) {
+		go(1.8 * cell);
 		intakeop(-127);
 		delay(500);
-		go(-0.7 * cell);
 		intakeop(0);
-		turnRight(1);
+		go(-0.06 * cell);
+		turnRight(0.95);
+		go(-0.927 * cell);
+		} else if (auton == 4) {
+		go(1.8 * cell);
+		intakeop(-127);
+		delay(500);
+		intakeop(0);
+		go(-0.06 * cell);
+		turnLeft(0.95);
+		go(-0.927 * cell);
 	}
 }
 
@@ -334,7 +351,7 @@ task usercontrol() {
 		if (vexRT[Btn5U] == 1) {
 			motor[shooter_left] = -127;
 			motor[shooter_right] = 127;
-		} else {
+			} else {
 			motor[shooter_left] = 0;
 			motor[shooter_right] = 0;
 		}
@@ -342,18 +359,18 @@ task usercontrol() {
 		// intake control
 		if (vexRT[Btn6D] == 1) {
 			motor[intake] = 127;
-		} else if (vexRT[Btn6U] == 1){
+			} else if (vexRT[Btn6U] == 1){
 			motor[intake] = -127;
-		} else {
+			} else {
 			motor[intake] = 0;
 		}
 
 		// flipper control
 		if (vexRT[Btn8L] == 1) {
 			motor[flipper] = -127;
-		} else if (vexRT[Btn8D]){
+			} else if (vexRT[Btn8D]){
 			motor[flipper] = 127;
-		} else {
+			} else {
 			motor[flipper] = 0;
 		}
 	}
