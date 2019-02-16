@@ -1,4 +1,3 @@
-
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    potentiometer,  sensorPotentiometer)
 #pragma config(Sensor, dgtl3,  urf,            sensorSONAR_cm)
@@ -35,13 +34,6 @@
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-//This is Jeremy's Competition Template code in order to not mess up the other Competition Template.
-//This is for the far side auton and can be deleted afterwards however if the far side autons and close side autons
-//work on this doc, then we will copy this o`ver onto the original file
-
-/* */
-
-
 /**
 * LCD AutonSelect starts here.
 */
@@ -51,6 +43,7 @@
 // 2 = flag-side blue
 // 3 = far-side red
 // 4 = far-side blue
+
 int auton = 0;
 
 int onOption = 0;
@@ -124,6 +117,7 @@ void pre_auton() {
 * @param {int} lspd Speed for left side to go.
 * @param {int} rspd Speed for right side to go.
 */
+
 void sgo(float rotations, int lspd, int rspd) {
 	resetMotorEncoder(sw_motor);
 	resetMotorEncoder(se_motor);
@@ -271,7 +265,7 @@ task autonomous() {
 		delay(500);
 		go(-1.2 * cell);
 		intakeop(0);
-		turnLeft(1.11);
+		turnLeft(1.1);
 		go(0.45 * cell);
 		shooterop(127);
 		delay(3500);
@@ -282,8 +276,8 @@ task autonomous() {
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
-		go(-0.1 * cell);
-		sgo(1* cell, 47, 127);
+		go(-0.5 * cell);
+		sgo(0.7 * cell, 127, 50);
 		delay(2000);
 		intakeop(0);
 		} else if (auton == 2) {
@@ -292,7 +286,7 @@ task autonomous() {
 		delay(500);
 		go(-1.05 * cell);
 		intakeop(0);
-		turnRight(1.115);
+		turnRight(1.1);
 		go(0.49 * cell);
 		shooterop(127);
 		delay(3500);
@@ -303,11 +297,9 @@ task autonomous() {
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
-		go(-0.15 * cell);
-		sgo(1* cell, 127, 47);
-		delay(1700);
-		go(0.1 * cell);
-		delay(500);
+		go(-0.5 * cell);
+		sgo(0.7 * cell, 50, 127);
+		delay(2000);
 		intakeop(0);
 		} else if (auton == 3) {
 		go(1.8 * cell);
@@ -315,16 +307,16 @@ task autonomous() {
 		delay(500);
 		intakeop(0);
 		go(-0.06 * cell);
-		turnRight(0.95);
-		go(-0.927 * cell);
+		turnRight(0.98);
+		go(-0.914 * cell);
 		} else if (auton == 4) {
 		go(1.8 * cell);
 		intakeop(-127);
 		delay(500);
 		intakeop(0);
 		go(-0.06 * cell);
-		turnLeft(0.95);
-		go(-0.927 * cell);
+		turnLeft(0.98);
+		go(-0.914 * cell);
 	}
 }
 
