@@ -276,9 +276,8 @@ task autonomous() {
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
-		go(-0.1 * cell);
-		sgo(0.7 * cell, 50, 127);
-		delay(2000);
+		go(-0.04 * cell);
+		sgo(1.5 * cell, 65, 127);
 		intakeop(0);
 		} else if (auton == 2) {
 		go(1.6 * cell);
@@ -297,8 +296,8 @@ task autonomous() {
 		shooterop(127);
 		delay(3500);
 		shooterop(0);
-		go(-0.5 * cell);
-		sgo(0.7 * cell, 127, 90);
+		go(-0.06  * cell);
+		sgo(1 * cell, 127, 30);
 		delay(2000);
 		intakeop(0);
 		} else if (auton == 3) {
